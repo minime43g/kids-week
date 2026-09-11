@@ -357,8 +357,8 @@ body{font-family:var(--font);color:var(--ink);background:var(--paper);-webkit-fo
   <div class="ph"><h1>설정 · 데이터</h1></div>
   <div class="set">
     <div class="box">
-      <h3>확정 시간표</h3>
-      <p>하준: 화·목 제이리아 → 더알랩 17:30–19:00(90분, 등원 부모/시내버스·하원 부모) / 월·금 공부방 → 빈스짐 → 리드인 17:30–18:20 → 태권도 4부(전 구간 차량) / 수 리드인 14:00(다연과) → 빈스짐 → 태권도 3부 17:15 합류 → 18:00 둘 함께 부모 픽업. 다연: 공부방 → 키즈칼리지 / 월·금 리드인 17:00 후 하준 4부 차량 편승 귀가 / 수 리드인 14:00 / 화·수·목 태권도 3부. "기본 시간표로 초기화"를 누르면 이 안으로 돌아옵니다.</p>
+      <h3>확정 시간표 (2026 2학기)</h3>
+      <p>하준: 화·목 우성이엄마 카풀 → 제이리아 → 더알랩 17:00–18:30(18:35 할머니 픽업) / 월·금 빈스짐(차량 15:15 삼룡초) → 리드인 17:30–18:20 → 태권도 4부(월 할머니 픽업·금 도보 귀가, 금 리드인→태권도는 엄마) / 수 할머니 픽업 13:45 → 리드인 14:00–15:10 → 빈스짐 → 태권도 3부 합류 → 18:10 할머니 픽업. 다연: 공부방(월·화·금 낮, 수·목 저녁) → 키즈칼리지 → 월·금 리드인 16:50–18:10(월 오빠 차량 편승·금 엄마 픽업) / 화·수·목 18:00 할머니 픽업. 태권도는 하준만.</p>
       <select class="hidden" id="planSel"><option value="final">확정</option></select>
     </div>
     <div class="box">
@@ -515,43 +515,51 @@ const BASE = [
 ];
 /* ===================== 확정 시간표: 하준 화·목 제이리아+더알랩 / 월·수·금 공부방→빈스짐 4시부→태권도 4부 / 수 리드인 14:00 둘 함께 ===================== */
 const JUN = [
-  // 화·목: 제이리아 → 더알랩 17:30–19:00 (90분씩, 주 180분). 등원 부모/시내버스, 하원 부모
+  // 화·목: 우성이엄마 카풀 → 제이리아 → 더알랩 17:00–18:30 → 18:35 할머니 픽업
+  {id:'j-mv3', childIds:['k1'], title:'우성이엄마 차량 (삼룡초 → 제이리아)', cat:'이동', move:'shuttle', days:[1,3], start:T('14:30'), end:T('15:00'), rec:'weekly'},
   {id:'j-eng', childIds:['k1'], title:'제이리아 영어', cat:'학원', days:[1,3], start:T('15:00'), end:T('16:30'), rec:'weekly'},
-  {id:'j-gap', childIds:['k1'], title:'더알랩 대기', cat:'대기', days:[1,3], start:T('16:50'), end:T('17:30'), rec:'weekly'},
-  {id:'j-math', childIds:['k1'], title:'더알랩 수학', cat:'학원', days:[1,3], start:T('17:30'), end:T('19:00'), rec:'weekly'},
-  {id:'j-mv3', childIds:['k1'], title:'삼룡초 → 제이리아', cat:'이동', move:'parent', days:[1,3], start:T('14:30'), end:T('15:00'), rec:'weekly'},
-  {id:'j-mv4', childIds:['k1'], title:'제이리아 → 더알랩 (부모 또는 시내버스)', cat:'이동', move:'parent', days:[1,3], start:T('16:30'), end:T('16:50'), rec:'weekly'},
-  {id:'j-mv16', childIds:['k1'], title:'더알랩 하원 (부모 픽업)', cat:'이동', move:'parent', days:[1,3], start:T('19:00'), end:T('19:15'), rec:'weekly'},
-  // 월·금: 공부방 → 빈스짐 → 17:20 차량 → 리드인 17:30–18:20 → 18:20 태권도 차량 → 4부, 전 구간 셔틀
-  {id:'j-study', childIds:['k1'], title:'공부방', cat:'학원', days:[0,4], start:T('14:30'), end:T('15:12'), rec:'weekly'},
-  {id:'j-mv1', childIds:['k1'], title:'빈스짐 차량 15:12 (푸르지오 CU 앞)', cat:'이동', move:'shuttle', days:[0,4], start:T('15:12'), end:T('16:00'), rec:'weekly'},
+  {id:'j-mv4', childIds:['k1'], title:'우성이엄마 차량 (제이리아 → 더알랩)', cat:'이동', move:'shuttle', days:[1,3], start:T('16:30'), end:T('16:50'), rec:'weekly'},
+  {id:'j-gap', childIds:['k1'], title:'더알랩 대기', cat:'대기', days:[1,3], start:T('16:50'), end:T('17:00'), rec:'weekly'},
+  {id:'j-math', childIds:['k1'], title:'더알랩 수학', cat:'학원', days:[1,3], start:T('17:00'), end:T('18:30'), rec:'weekly'},
+  {id:'j-mv16', childIds:['k1'], title:'할머니 픽업 18:35 (다연 탑승 중)', cat:'이동', move:'parent', days:[1,3], start:T('18:35'), end:T('18:50'), rec:'weekly'},
+  // 월·금: 학교 대기 → 빈스짐 차량 15:15(삼룡초) → 주짓수 → 17:25 아이파크 하원 → 리드인 17:30–18:20 → 태권도 4부
+  {id:'j-wait0', childIds:['k1'], title:'학교에서 대기', cat:'대기', days:[0,4], start:T('14:30'), end:T('15:15'), rec:'weekly'},
+  {id:'j-mv1', childIds:['k1'], title:'빈스짐 차량 15:15 (삼룡초)', cat:'이동', move:'shuttle', days:[0,4], start:T('15:15'), end:T('16:00'), rec:'weekly'},
   {id:'j-jj', childIds:['k1'], title:'빈스짐 주짓수 (4시부)', cat:'학원', days:[0,2,4], start:T('16:00'), end:T('17:00'), rec:'weekly'},
-  {id:'j-mv8', childIds:['k1'], title:'빈스짐 차량 → 아이파크 2차 상가 (17:25 하원, 리드인 앞)', cat:'이동', move:'shuttle', days:[0,4], start:T('17:00'), end:T('17:25'), rec:'weekly'},
-  {id:'j-read', childIds:['k1'], title:'리드인', cat:'학원', days:[0,2,4], start:T('17:30'), end:T('18:20'), rec:'weekly',
-   perDay:{2:{start:T('14:00'), end:T('14:50')}}},   // 수요일은 하교 직후 다연과 같은 14:00 반
-  {id:'j-mv5', childIds:['k1'], title:'태권도 차량 18:20 아이파크', cat:'이동', move:'shuttle', days:[0,4], start:T('18:20'), end:T('18:30'), rec:'weekly'},
+  {id:'j-mv8', childIds:['k1'], title:'빈스짐 차량 → 아이파크 2차 상가 (17:25 하원)', cat:'이동', move:'shuttle', days:[0,4], start:T('17:00'), end:T('17:25'), rec:'weekly'},
+  {id:'j-read', childIds:['k1'], title:'리드인', cat:'학원', days:[0,4], start:T('17:30'), end:T('18:20'), rec:'weekly'},
+  {id:'j-mv5', childIds:['k1'], title:'태권도 차량 18:20 (아이파크)', cat:'이동', move:'shuttle', days:[0], start:T('18:20'), end:T('18:30'), rec:'weekly'},
+  {id:'j-mv5f', childIds:['k1'], title:'엄마 픽업 18:20 → 태권도', cat:'이동', move:'parent', days:[4], start:T('18:20'), end:T('18:30'), rec:'weekly'},
   {id:'j-tkd', childIds:['k1'], title:'태권도 4부', cat:'학원', days:[0,4], start:T('18:30'), end:T('19:30'), rec:'weekly'},
-  {id:'j-mv9', childIds:['k1'], title:'태권도 차량 → 집', cat:'이동', move:'shuttle', days:[0,4], start:T('19:30'), end:T('19:45'), rec:'weekly'},
-  // 수: 리드인 14:00(다연과) → 빈스짐 → 17:15 하원 → 태권도 3부 17:15 합류 → 18:00 둘 함께 부모 픽업
-  {id:'j-wait', childIds:['k1'], title:'리드인 대기', cat:'대기', days:[2], start:T('14:50'), end:T('15:20'), rec:'weekly'},
+  {id:'j-mv9', childIds:['k1'], title:'할머니 픽업 19:30', cat:'이동', move:'parent', days:[0], start:T('19:30'), end:T('19:45'), rec:'weekly'},
+  {id:'j-mv9f', childIds:['k1'], title:'집까지 도보', cat:'이동', move:'walk', days:[4], start:T('19:30'), end:T('19:45'), rec:'weekly'},
+  // 수: 13:45 할머니 픽업(다연과) → 리드인 14:00–15:10 → 빈스짐 차량 15:20(아이파크) → 주짓수 → 17:15 태권도장 하원 → 3부 합류 → 18:10 할머니 픽업
+  {id:'j-read2', childIds:['k1'], title:'리드인', cat:'학원', days:[2], start:T('14:00'), end:T('15:10'), rec:'weekly'},
+  {id:'j-wait', childIds:['k1'], title:'리드인 대기', cat:'대기', days:[2], start:T('15:10'), end:T('15:20'), rec:'weekly'},
   {id:'j-mv1b', childIds:['k1'], title:'빈스짐 차량 15:20 (아이파크 2차 상가)', cat:'이동', move:'shuttle', days:[2], start:T('15:20'), end:T('16:00'), rec:'weekly'},
   {id:'j-mv11', childIds:['k1'], title:'빈스짐 차량 → 태권도장 (17:15 하원)', cat:'이동', move:'shuttle', days:[2], start:T('17:00'), end:T('17:15'), rec:'weekly'},
   {id:'j-tkd2', childIds:['k1'], title:'태권도 3부 (17:15 합류, 18:00 맞춤)', cat:'학원', days:[2], start:T('17:15'), end:T('18:00'), rec:'weekly'},
-  {id:'j-mv18', childIds:['k1','k2'], title:'태권도 18:00 부모 픽업 (둘 함께)', cat:'이동', move:'parent', days:[2], start:T('18:00'), end:T('18:15'), rec:'weekly'},
+  {id:'j-mv18', childIds:['k1'], title:'할머니 픽업 18:10 (다연 먼저 탑승)', cat:'이동', move:'parent', days:[2], start:T('18:00'), end:T('18:15'), rec:'weekly'},
 ];
 // 다연: 월·수·금 리드인 후 18:00 픽업. 태권도는 화·목 3부 2회.
 const DANI = [
-  {id:'d-study', childIds:['k2'], title:'공부방', cat:'학원', days:[0,1,3,4], start:T('13:50'), end:T('14:45'), rec:'weekly',
-   perDay:{3:{start:T('14:30'), end:T('14:45')}}},   // 14:45 종료 → 15:00 키즈칼리지 차량까지 대기. 수요일은 공부방 대신 리드인 14:00
-  {id:'d-mv-in', childIds:['k2'], title:'키즈칼리지 차량 (등원)', cat:'이동', move:'shuttle', days:[0,1,2,3,4], start:T('15:00'), end:T('15:30'), rec:'weekly'},
-  {id:'d-eng', childIds:['k2'], title:'키즈칼리지 영어 (실수업)', cat:'학원', days:[0,1,2,3,4], start:T('15:30'), end:T('16:15'), rec:'weekly'},   // 16:15 종료, 다연 전화 가능 16:20부터
-  {id:'d-read', childIds:['k2'], title:'리드인', cat:'학원', days:[0,2,4], start:T('17:00'), end:T('18:00'), rec:'weekly',
-   perDay:{2:{start:T('14:00'), end:T('14:50')}}},   // 수요일은 하준과 같은 14:00 반, 끝나고 리드인에서 15:00 키즈칼리지 차량
-  {id:'d-tkd', childIds:['k2'], title:'태권도 3부', cat:'학원', days:[1,2,3], start:T('17:00'), end:T('18:00'), rec:'weekly'},   // 수요일은 하준과 같은 3부
-  {id:'d-mv2', childIds:['k2'], title:'키즈칼리지 차량 → 리드인 (16:45 하차)', cat:'이동', move:'shuttle', days:[0,4], start:T('16:15'), end:T('17:00'), rec:'weekly'},
-  {id:'d-mv3', childIds:['k2'], title:'키즈칼리지 차량 → 태권도 (16:45 하차)', cat:'이동', move:'shuttle', days:[1,2,3], start:T('16:15'), end:T('17:00'), rec:'weekly'},
-  {id:'d-mv4', childIds:['k2'], title:'태권도 차량 18:20 편승 → 집 (하준 4부)', cat:'이동', move:'shuttle', days:[0,4], start:T('18:00'), end:T('18:40'), rec:'weekly'},
-  {id:'f-mv2', childIds:['k1','k2'], title:'삼룡초 → 리드인 (둘 함께)', cat:'이동', move:'parent', days:[2], start:T('13:50'), end:T('14:00'), rec:'weekly'},
+  // 태권도는 2학기부터 안 다님. 공부방: 월·화·금 낮 / 수·목 저녁
+  {id:'d-mv0', childIds:['k2'], title:'친구랑 도보 (삼룡초 → 공부방)', cat:'이동', move:'walk', days:[0,4], start:T('13:50'), end:T('14:00'), rec:'weekly'},
+  {id:'d-study', childIds:['k2'], title:'공부방', cat:'학원', days:[0,1,4], start:T('14:00'), end:T('14:50'), rec:'weekly',
+   perDay:{1:{start:T('13:50'), end:T('14:50')}}},
+  {id:'d-wait0', childIds:['k2'], title:'학교에서 대기', cat:'대기', days:[3], start:T('14:30'), end:T('15:00'), rec:'weekly'},
+  {id:'d-mv-in', childIds:['k2'], title:'키즈칼리지 차량 15:00 승차', cat:'이동', move:'shuttle', days:[0,1,2,3,4], start:T('15:00'), end:T('15:30'), rec:'weekly'},
+  {id:'d-eng', childIds:['k2'], title:'키즈칼리지 영어 (실수업)', cat:'학원', days:[0,1,2,3,4], start:T('15:30'), end:T('16:15'), rec:'weekly'},
+  {id:'d-mv2', childIds:['k2'], title:'키즈칼리지 차량 → 리드인 (16:45 하차)', cat:'이동', move:'shuttle', days:[0,4], start:T('16:15'), end:T('16:50'), rec:'weekly'},
+  {id:'d-mv3', childIds:['k2'], title:'키즈칼리지 차량 → 푸르지오 CU 앞 (16:45 하차)', cat:'이동', move:'shuttle', days:[1,2,3], start:T('16:15'), end:T('17:00'), rec:'weekly'},
+  {id:'d-read', childIds:['k2'], title:'리드인', cat:'학원', days:[0,2,4], start:T('16:50'), end:T('18:10'), rec:'weekly',
+   perDay:{2:{start:T('14:00'), end:T('14:50')}}},
+  {id:'d-mv4', childIds:['k2'], title:'오빠 태권도 4부 차량 18:20 탑승 → 집', cat:'이동', move:'shuttle', days:[0], start:T('18:10'), end:T('18:40'), rec:'weekly'},
+  {id:'d-mv4f', childIds:['k2'], title:'엄마 픽업 18:10', cat:'이동', move:'parent', days:[4], start:T('18:10'), end:T('18:25'), rec:'weekly'},
+  {id:'d-home', childIds:['k2'], title:'집', cat:'집', days:[1], start:T('17:00'), end:T('18:00'), rec:'weekly'},
+  {id:'d-study2', childIds:['k2'], title:'공부방', cat:'학원', days:[2,3], start:T('17:00'), end:T('18:00'), rec:'weekly'},
+  {id:'d-mv5', childIds:['k2'], title:'할머니 픽업 18:00 (우리집 앞) → 오빠에게로', cat:'이동', move:'parent', days:[1,2,3], start:T('18:00'), end:T('18:15'), rec:'weekly'},
+  {id:'f-mv2', childIds:['k1','k2'], title:'할머니 픽업 13:45 (삼룡초 → 리드인, 둘 함께)', cat:'이동', move:'parent', days:[2], start:T('13:45'), end:T('14:00'), rec:'weekly'},
 ];
 const PLANS = { final:[...DANI, ...JUN] };
 let plan='final';
@@ -561,7 +569,7 @@ loadPlan();
 
 /* ===================== 저장 (1단계: 브라우저 localStorage) ===================== */
 const STORE_KEY = 'kids-week-v1';
-const BASE_VERSION = 39;   // 기본 시간표를 바꿀 때마다 올림 → 저장된 옛 데이터 위에 새 기본값 제안
+const BASE_VERSION = 40;   // 기본 시간표를 바꿀 때마다 올림 → 저장된 옛 데이터 위에 새 기본값 제안
 let storage = null; try { storage = window.localStorage; storage.setItem('__t','1'); storage.removeItem('__t'); } catch(e){ storage=null; }
 let ACOMMENTS={ kids:'수업 16:15에 끝남. 다연이 전화는 16:20부터 가능' };
 function serialize(){ return {version:1, baseVersion:BASE_VERSION, savedAt:new Date().toISOString(), plan, events, exceptions, fees:Object.fromEntries(ACADEMIES.map(a=>[a.id,a.fee])), comments:ACOMMENTS}; }
@@ -1039,18 +1047,18 @@ drawer.addEventListener('keydown', e=>{ if(e.key==='Enter' && e.target.tagName!=
 // fee: perChild(1인당) 또는 total(자녀 합계). unit: '월' | '4주'. null이면 미입력.
 const ACADEMIES = [
   {id:'jayria', name:'제이리아', subject:'영어', match:['제이리아'], addr:'거제시 거제중앙로5길 22 가나마메종 2차', shuttle:false,
-   fee:{unit:'4주', perChild:210000}, note:'차량 없음 → 화·목 삼룡초→제이리아, 제이리아→리드인 부모 이동'},
+   fee:{unit:'4주', perChild:210000}, note:'차량 없음. 화·목 등하원은 우성이엄마 카풀'},
   {id:'kids', name:'키즈칼리지', subject:'영어', match:['키즈칼리지'], addr:'거제시 연초면 소오비길 45', shuttle:true,
-   fee:{unit:'월', total:452400, note:'2명 기준 (1인 226,200원)'}, note:'차량 15:00 승차(공부방에서), 실수업 15:30–16:15, 16:45 하차(리드인·태권도로 내려줌) — 전 구간 셔틀'},
+   fee:{unit:'월', total:452400, note:'차량 15:00 승차(월·화·금 공부방 앞, 목 삼룡초, 수 리드인 앞), 실수업 15:30–16:15, 16:45 하차(월·금 리드인, 화·수·목 푸르지오 CU 앞). 다연 전화 가능 16:20부터'}, note:'차량 15:00 승차(공부방에서), 실수업 15:30–16:15, 16:45 하차(리드인·태권도로 내려줌) — 전 구간 셔틀'},
   {id:'tkd', name:'천하무적태권도', subject:'태권도', match:['태권도'], addr:'거제시 문동동 646-3', shuttle:true,
-   fee:{unit:'월', perChild:150000}, note:'하준 월·수·금 4부(18:10 푸르지오 승차), 다연 화·수·목 3부. 차량은 아파트 정류장만, 학교 픽업 없음. 학교·집에서 도보권'},
+   fee:{unit:'월', perChild:150000}, note:'하준만 등록: 월·금 4부(월 차량 18:20 아이파크·금 엄마 픽업 이동), 수 3부 17:15 합류. 다연은 2학기부터 안 다님'},
   {id:'bins', name:'빈스GYM (팀야마/루트BJJ)', subject:'주짓수', match:['빈스짐','주짓수'], addr:'거제시 고현동 702-1', shuttle:true,
    fee:{unit:'월', perChild:130000, note:'무예스쿨 주3회 기준'},
-   note:'3시부 없음. 4시부 16:00–17:00 · 차량 15:20 승차 / 17:20 하차\n주2회 12만 · 주3회 13만 · 주4회 14만 · 주5회 15만 (3개월 선납 34.5/37.5/40.5/43.5만) · 2인 가족할인 1만원\n필수용품: 도복 12만 · 백글러브 3만 · 티셔츠 1.5만 — 신규 3개월 등록 시 글러브·도복 50%, 티셔츠 지급\n차량 어디든 픽드랍 가능 → 더알랩 하차 확인됨'},
+   note:'4시부 16:00–17:00. 차량(하준): 월·금 15:15 삼룡초 승차/17:25 아이파크 2차 상가 하원, 수 15:20 아이파크 승차/17:15 태권도장 하원\n주2회 12만 · 주3회 13만 · 주4회 14만 · 주5회 15만 (3개월 선납 34.5/37.5/40.5/43.5만) · 2인 가족할인 1만원\n필수용품: 도복 12만 · 백글러브 3만 · 티셔츠 1.5만 — 신규 3개월 등록 시 글러브·도복 50%, 티셔츠 지급\n차량 어디든 픽드랍 가능 → 더알랩 하차 확인됨'},
   {id:'readin', name:'리드인', subject:'독서', match:['리드인'], addr:'거제시 수양로 110', shuttle:false,
-   fee:{unit:'월', perChild:null}, note:'차량 없음, 50분 수업. 하준 월·금 17:30–18:20 + 수 14:00(하교 직후), 다연 월·금 17:00–18:00 + 수 14:00'},
+   fee:{unit:'월', perChild:null}, note:'차량 없음. 하준 월·금 17:30–18:20 + 수 14:00–15:10, 다연 월·금 16:50–18:10 + 수 14:00–14:50'},
   {id:'thelab', name:'더알랩', subject:'수학', match:['더알랩'], addr:'거제시 상동동 1041', shuttle:false,
-   fee:{unit:'월', perChild:null}, note:'차량 없음. 빈스짐 차량으로 하차'},
+   fee:{unit:'월', perChild:null}, note:'차량 없음. 확정(2학기): 화·목 17:00–18:30. 등원 우성이엄마 카풀, 하원 할머니 픽업 18:35'},
   {id:'study', name:'공부방', subject:'공부방', match:['공부방'], addr:'푸르지오 (집 단지)', shuttle:false,
    fee:{unit:'월', perChild:null}, note:'13:50부터 수업. 15:00 키즈칼리지 차량 승차 장소'},
 ];
