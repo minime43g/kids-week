@@ -373,12 +373,10 @@ body{font-family:var(--font);color:var(--ink);background:var(--paper);-webkit-fo
       <input type="file" id="importFile" accept="application/json,.json" class="hidden">
     </div>
     <div class="box" id="syncBox">
-      <h3>서버 연결 · 공유형 (Supabase)</h3>
-      <p>세 값을 넣고 연결하면 이 기기의 시간표가 서버에 올라가고, 같은 가족 코드를 넣은 다른 기기(배우자 PC·폰)와 자동으로 맞춰집니다. 값은 이 브라우저에만 저장됩니다.</p>
+      <h3>서버 저장 · 가족 공유</h3>
+      <p>서버는 미리 설정되어 있습니다. <b>가족 코드만 넣고 연결</b>하면 이 기기의 시간표가 서버에 저장되고, 같은 코드를 넣은 다른 기기(배우자 PC·폰)와 자동으로 맞춰집니다.</p>
       <div class="f" style="display:flex;flex-direction:column;gap:10px">
-        <div><label class="l" for="sbUrl">Project URL</label><input type="text" id="sbUrl" placeholder="https://xxxx.supabase.co" autocomplete="off"></div>
-        <div><label class="l" for="sbKey">anon public key</label><input type="text" id="sbKey" placeholder="eyJhbGciOi..." autocomplete="off"></div>
-        <div><label class="l" for="sbCode">가족 코드 (8자 이상, 아는 사람만 접근)</label>
+        <div><label class="l" for="sbCode">가족 코드 (8자 이상 · 비밀번호처럼, 아는 사람만 접근)</label>
           <div style="display:flex;gap:6px"><input type="text" id="sbCode" placeholder="예: haejun-dayeon-2026" autocomplete="off"><button class="btn" id="sbGen" type="button" style="white-space:nowrap">생성</button></div></div>
         <div class="row-btns">
           <button class="btn primary" id="sbConnect">연결 · 동기화 시작</button>
@@ -387,6 +385,12 @@ body{font-family:var(--font);color:var(--ink);background:var(--paper);-webkit-fo
           <button class="btn danger" id="sbOff">연결 해제</button>
         </div>
         <div class="note" id="sbStatus">연결 안 됨</div>
+        <details style="font-size:12px;color:var(--ink-3)"><summary style="cursor:pointer">고급 · 다른 서버 쓰기</summary>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+            <div><label class="l" for="sbUrl">Project URL</label><input type="text" id="sbUrl" autocomplete="off"></div>
+            <div><label class="l" for="sbKey">publishable (anon) key</label><input type="text" id="sbKey" autocomplete="off"></div>
+          </div>
+        </details>
       </div>
     </div>
     <div class="box">
@@ -569,7 +573,7 @@ loadPlan();
 
 /* ===================== 저장 (1단계: 브라우저 localStorage) ===================== */
 const STORE_KEY = 'kids-week-v1';
-const BASE_VERSION = 40;   // 기본 시간표를 바꿀 때마다 올림 → 저장된 옛 데이터 위에 새 기본값 제안
+const BASE_VERSION = 41;   // 기본 시간표를 바꿀 때마다 올림 → 저장된 옛 데이터 위에 새 기본값 제안
 let storage = null; try { storage = window.localStorage; storage.setItem('__t','1'); storage.removeItem('__t'); } catch(e){ storage=null; }
 let ACOMMENTS={ kids:'수업 16:15에 끝남. 다연이 전화는 16:20부터 가능' };
 function serialize(){ return {version:1, baseVersion:BASE_VERSION, savedAt:new Date().toISOString(), plan, events, exceptions, fees:Object.fromEntries(ACADEMIES.map(a=>[a.id,a.fee])), comments:ACOMMENTS}; }
@@ -589,6 +593,7 @@ function save(){
 }
 /* ===================== 2단계: 서버 동기화 (Supabase RPC) ===================== */
 const SB_KEY='kids-week-sb';
+const SB_DEFAULT={url:'https://awtpeohftnlhbgqrdunx.supabase.co', key:'sb_publishable_U_khFTmn5auUMefOM-Qh8Q_uJ0Mug4O'};
 let sb = null;            // {url,key,code}
 let lastRemoteAt = null;  // 마지막으로 본 서버 updated_at
 let pushTimer=null, pollTimer=null, syncing=false;
@@ -627,7 +632,7 @@ async function push(){
 function schedulePush(){ if(!sb) return; clearTimeout(pushTimer); pushTimer=setTimeout(push, 800); }
 function startPolling(){ clearInterval(pollTimer); if(sb) pollTimer=setInterval(()=>pull(true), 30000); }
 async function connect(first){
-  const url=document.getElementById('sbUrl').value.trim(), key=document.getElementById('sbKey').value.trim(), code=document.getElementById('sbCode').value.trim();
+  const url=(document.getElementById('sbUrl').value.trim()||SB_DEFAULT.url), key=(document.getElementById('sbKey').value.trim()||SB_DEFAULT.key), code=document.getElementById('sbCode').value.trim();
   if(!/^https:\/\/.+supabase\.co$/.test(url.replace(/\/$/,''))){ sbStatus('URL 형식을 확인하세요 (https://xxxx.supabase.co)', 'err'); return; }
   if(key.length<20){ sbStatus('anon key를 확인하세요', 'err'); return; }
   if(code.length<8){ sbStatus('가족 코드는 8자 이상이어야 합니다', 'err'); return; }
@@ -636,7 +641,7 @@ async function connect(first){
   if(res===null && !document.getElementById('sbStatus').textContent.startsWith('서버 오류')){ await push(); toast('서버에 처음 올렸습니다. 다른 기기에서 같은 값으로 연결하면 이 시간표가 보입니다', false); }
   startPolling();
 }
-function fillSbForm(){ if(!sb) return; document.getElementById('sbUrl').value=sb.url; document.getElementById('sbKey').value=sb.key; document.getElementById('sbCode').value=sb.code; }
+function fillSbForm(){ const c=sb||SB_DEFAULT; document.getElementById('sbUrl').value=c.url||SB_DEFAULT.url; document.getElementById('sbKey').value=c.key||SB_DEFAULT.key; if(sb) document.getElementById('sbCode').value=sb.code; }
 document.getElementById('sbConnect').onclick=()=>connect(true);
 document.getElementById('sbPull').onclick=()=>{ if(!sb){ sbStatus('먼저 연결하세요','err'); return; } lastRemoteAt=null; pull(false); };
 document.getElementById('sbPush').onclick=()=>{ if(!sb){ sbStatus('먼저 연결하세요','err'); return; } push().then(()=>toast('서버로 올렸습니다', false)); };
